@@ -10,26 +10,27 @@ public:
   // Color Palette
   struct Colors
   {
-    static const QString PRIMARY_ORANGE;
-    static const QString PRIMARY_ORANGE_RGB;
-    static const QString ERROR_BLUE;
-    static const QString TIMESTAMP_GRAY;
-    static const QString BLACK;
-    static const QString WHITE;
-    static const QString DEEP_PINK;
-    static const QString DARK_BACKGROUND;
-    static const QString CONSOLE_BACKGROUND;
+    // Primary theme colors
+    static const QString PRIMARY;            // Main brand/accent color (currently orange)
+    static const QString PRIMARY_RGB;        // RGB format of primary color
+    static const QString SELECTION;          // Selection and interactive states (currently blue)
+    static const QString MUTED;              // Secondary/muted text (currently gray)
+    static const QString BACKGROUND;         // Main background (currently black)
+    static const QString FOREGROUND;         // Main text color (currently white)
+    static const QString HIGHLIGHT;          // Text selection highlight (currently pink)
+    static const QString SURFACE;            // Elevated surface background (currently dark)
+    static const QString TERMINAL_BACKGROUND; // Terminal/console specific background
 
     // Alpha variants for transparency
-    static QString primaryOrangeAlpha(int alpha);
-    static QString blackAlpha(int alpha);
-    static QString whiteAlpha(int alpha);
-    static QString errorBlueAlpha(int alpha);
+    static QString primaryAlpha(int alpha);
+    static QString backgroundAlpha(int alpha);
+    static QString foregroundAlpha(int alpha);
+    static QString selectionAlpha(int alpha);
     
-    // Alpha conversion helpers
-    static QString primaryOrangeAlpha(double alpha);  // Takes 0.0-1.0
-    static QString blackAlpha(double alpha);
-    static QString errorBlueAlpha(double alpha);
+    // Alpha conversion helpers (0.0-1.0)
+    static QString primaryAlpha(double alpha);
+    static QString backgroundAlpha(double alpha);
+    static QString selectionAlpha(double alpha);
   };
 
   // Typography
@@ -62,7 +63,7 @@ public:
   static QString primaryButton();
   static QString secondaryButton();
   static QString tau5Scrollbar();
-  static QString orangeBorder(const QString &width = "1px");
+  static QString primaryBorder(const QString &width = "1px");
   static QString textEdit();
   static QString checkbox();
 

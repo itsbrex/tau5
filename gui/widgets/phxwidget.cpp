@@ -24,7 +24,7 @@ PhxWidget::PhxWidget(QWidget *parent)
 
   mainLayout->addWidget(phxView, 1);
   this->setStyleSheet(QString("PhxWidget { background-color: %1; }")
-                          .arg(StyleManager::Colors::BLACK));
+                          .arg(StyleManager::Colors::BACKGROUND));
 
   connect(phxView, &PhxWebView::loadFinished, this, &PhxWidget::handleLoadFinished);
 }

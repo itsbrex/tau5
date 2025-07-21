@@ -58,7 +58,7 @@ QString ZoomController::getZoomButtonStyle()
         "  background-color: %1;"
         "  border-radius: 3px;"
         "}"
-    ).arg(StyleManager::Colors::blackAlpha(51));
+    ).arg(StyleManager::Colors::backgroundAlpha(51));
 }
 
 QIcon ZoomController::createZoomInIcon()
@@ -68,7 +68,7 @@ QIcon ZoomController::createZoomInIcon()
     
     QPainter painter(&pixmap);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setPen(QPen(QColor(StyleManager::Colors::TIMESTAMP_GRAY), 2));
+    painter.setPen(QPen(QColor(StyleManager::Colors::MUTED), 2));
     
     // Draw plus sign
     painter.drawLine(8, 4, 8, 12);
@@ -84,7 +84,7 @@ QIcon ZoomController::createZoomOutIcon()
     
     QPainter painter(&pixmap);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setPen(QPen(QColor(StyleManager::Colors::TIMESTAMP_GRAY), 2));
+    painter.setPen(QPen(QColor(StyleManager::Colors::MUTED), 2));
     
     // Draw minus sign
     painter.drawLine(4, 8, 12, 8);

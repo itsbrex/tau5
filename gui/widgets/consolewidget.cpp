@@ -59,7 +59,7 @@ void ConsoleWidget::setupUi()
               "  letter-spacing: 1px; "
               "  padding: %5 %6; "
               "}")
-          .arg(StyleManager::Colors::PRIMARY_ORANGE)
+          .arg(StyleManager::Colors::PRIMARY)
           .arg(StyleManager::Typography::MONOSPACE_FONT_FAMILY)
           .arg(StyleManager::Typography::FONT_WEIGHT_BOLD)
           .arg(StyleManager::Typography::FONT_SIZE_LARGE)
@@ -76,7 +76,7 @@ void ConsoleWidget::setupUi()
               "  background: transparent; "
               "  margin-right: %5; "
               "}")
-          .arg(StyleManager::Colors::PRIMARY_ORANGE)
+          .arg(StyleManager::Colors::PRIMARY)
           .arg(StyleManager::Typography::MONOSPACE_FONT_FAMILY)
           .arg(StyleManager::Typography::FONT_SIZE_SMALL)
           .arg(StyleManager::Typography::FONT_WEIGHT_BOLD)
@@ -112,10 +112,10 @@ void ConsoleWidget::setupUi()
               "  border-top: 2px solid %3; "
               "  border-bottom: 1px solid %4; "
               "}")
-          .arg(StyleManager::Colors::blackAlpha(191))
-          .arg(StyleManager::Colors::primaryOrangeAlpha(64))
-          .arg(StyleManager::Colors::primaryOrangeAlpha(150))
-          .arg(StyleManager::Colors::primaryOrangeAlpha(100)));
+          .arg(StyleManager::Colors::backgroundAlpha(191))
+          .arg(StyleManager::Colors::primaryAlpha(64))
+          .arg(StyleManager::Colors::primaryAlpha(150))
+          .arg(StyleManager::Colors::primaryAlpha(100)));
 
   connect(m_autoScrollToggle, &QCheckBox::toggled, this, &ConsoleWidget::handleAutoScrollToggled);
 
@@ -139,10 +139,10 @@ void ConsoleWidget::appendOutput(const QString &text, bool isError)
   QString timestamp = QDateTime::currentDateTime().toString("[hh:mm:ss.zzz] ");
 
   QTextCharFormat format;
-  format.setForeground(isError ? QColor(StyleManager::Colors::ERROR_BLUE) : QColor(StyleManager::Colors::PRIMARY_ORANGE));
+  format.setForeground(isError ? QColor(StyleManager::Colors::SELECTION) : QColor(StyleManager::Colors::PRIMARY));
 
   QTextCharFormat timestampFormat;
-  timestampFormat.setForeground(QColor(StyleManager::Colors::TIMESTAMP_GRAY));
+  timestampFormat.setForeground(QColor(StyleManager::Colors::MUTED));
   cursor.setCharFormat(timestampFormat);
   cursor.insertText(timestamp);
 

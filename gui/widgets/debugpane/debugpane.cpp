@@ -90,14 +90,14 @@ private:
                     // For horizontal splitter, draw vertical bar
                     int centerStart = (width() - DebugPane::RESIZE_HANDLE_VISUAL_HEIGHT) / 2;
                     painter.fillRect(centerStart, 0, DebugPane::RESIZE_HANDLE_VISUAL_HEIGHT, height(), 
-                                   QColor(StyleManager::Colors::PRIMARY_ORANGE));
+                                   QColor(StyleManager::Colors::PRIMARY));
                 }
                 else
                 {
                     // For vertical splitter, draw horizontal bar
                     int centerStart = (height() - DebugPane::RESIZE_HANDLE_VISUAL_HEIGHT) / 2;
                     painter.fillRect(0, centerStart, width(), DebugPane::RESIZE_HANDLE_VISUAL_HEIGHT, 
-                                   QColor(StyleManager::Colors::PRIMARY_ORANGE));
+                                   QColor(StyleManager::Colors::PRIMARY));
                 }
             }
         }
@@ -156,7 +156,7 @@ void DebugPane::setupUi()
   m_dragHandleWidget->hide();
   m_dragHandleWidget->setStyleSheet(QString(
       "background-color: %1;"
-      ).arg(StyleManager::Colors::PRIMARY_ORANGE));
+      ).arg(StyleManager::Colors::PRIMARY));
 
   setupViewControls();
   
@@ -189,10 +189,10 @@ void DebugPane::setupUi()
               "  border-top: 2px solid %3; "
               "  border-bottom: 1px solid %4; "
               "}")
-          .arg(StyleManager::Colors::blackAlpha(191))
-          .arg(StyleManager::Colors::primaryOrangeAlpha(64))
-          .arg(StyleManager::Colors::primaryOrangeAlpha(150))
-          .arg(StyleManager::Colors::primaryOrangeAlpha(100)));
+          .arg(StyleManager::Colors::backgroundAlpha(191))
+          .arg(StyleManager::Colors::primaryAlpha(64))
+          .arg(StyleManager::Colors::primaryAlpha(150))
+          .arg(StyleManager::Colors::primaryAlpha(100)));
 
   m_slideAnimation = std::make_unique<QPropertyAnimation>(this, "slidePosition");
   m_slideAnimation->setDuration(300);
@@ -212,9 +212,9 @@ void DebugPane::setupViewControls()
   m_headerLayout = new QHBoxLayout(m_headerWidget);
   m_headerLayout->setContentsMargins(10, 2, 10, 2);
 
-  QString normalColor = StyleManager::Colors::PRIMARY_ORANGE;
-  QString hoverColor = StyleManager::Colors::WHITE;
-  QString selectedColor = StyleManager::Colors::ERROR_BLUE;
+  QString normalColor = StyleManager::Colors::PRIMARY;
+  QString hoverColor = StyleManager::Colors::FOREGROUND;
+  QString selectedColor = StyleManager::Colors::SELECTION;
 
   QString terminalSvg = QString("<svg viewBox='0 0 24 24' fill='%1'><path fill-rule='evenodd' clip-rule='evenodd' d='M1.5 3L3 1.5H21L22.5 3V21L21 22.5H3L1.5 21V3ZM3 3V21H21V3H3Z'/><path d='M7.06078 7.49988L6.00012 8.56054L10.2427 12.8032L6 17.0459L7.06066 18.1066L12 13.1673V12.4391L7.06078 7.49988Z'/><rect x='12' y='16.5' width='6' height='1.5'/></svg>");
 
@@ -283,9 +283,9 @@ void DebugPane::setupViewControls()
       "QPushButton:focus { "
       "  outline: none; "
       "}")
-      .arg(StyleManager::Colors::primaryOrangeAlpha(25))   // hover
-      .arg(StyleManager::Colors::primaryOrangeAlpha(51))   // pressed
-      .arg(StyleManager::Colors::errorBlueAlpha(51));      // checked
+      .arg(StyleManager::Colors::primaryAlpha(25))   // hover
+      .arg(StyleManager::Colors::primaryAlpha(51))   // pressed
+      .arg(StyleManager::Colors::selectionAlpha(51));      // checked
 
   m_restartButton->setStyleSheet(buttonStyle);
   m_beamLogButton->setStyleSheet(buttonStyle);
@@ -340,9 +340,9 @@ void DebugPane::setupConsole()
   toolbarLayout->addWidget(m_iexShellTabButton);
   toolbarLayout->addStretch();
   
-  QString normalColor = StyleManager::Colors::PRIMARY_ORANGE;
-  QString hoverColor = StyleManager::Colors::WHITE;
-  QString activeColor = StyleManager::Colors::PRIMARY_ORANGE;
+  QString normalColor = StyleManager::Colors::PRIMARY;
+  QString hoverColor = StyleManager::Colors::FOREGROUND;
+  QString activeColor = StyleManager::Colors::PRIMARY;
   QString autoScrollOffSvg = QString("<svg viewBox='0 0 16 16' fill='%1' xmlns='http://www.w3.org/2000/svg'>"
       "<path d='M8 3v7M5 7l3 3 3-3' stroke='%1' stroke-width='1.5' fill='none'/>"
       "<rect x='4' y='12' width='8' height='2' fill='%1' opacity='0.3'/>"
@@ -385,8 +385,8 @@ void DebugPane::setupConsole()
       "  background: %2; "
       "  border-radius: 2px; "
       "}")
-      .arg(StyleManager::Colors::primaryOrangeAlpha(25))
-      .arg(StyleManager::Colors::primaryOrangeAlpha(64)));
+      .arg(StyleManager::Colors::primaryAlpha(25))
+      .arg(StyleManager::Colors::primaryAlpha(64)));
   m_autoScrollButton->setToolTip("Auto-scroll");
   m_autoScrollButton->setFocusPolicy(Qt::NoFocus);
   m_autoScrollButton->setVisible(true);
@@ -416,8 +416,8 @@ void DebugPane::setupConsole()
       "  background: %2; "
       "  border-radius: 2px; "
       "}")
-      .arg(StyleManager::Colors::primaryOrangeAlpha(25))
-      .arg(StyleManager::Colors::primaryOrangeAlpha(64)));
+      .arg(StyleManager::Colors::primaryAlpha(25))
+      .arg(StyleManager::Colors::primaryAlpha(64)));
   m_beamLogSearchButton->setToolTip("Search (Ctrl+S)");
   m_beamLogSearchButton->setFocusPolicy(Qt::NoFocus);
   m_beamLogSearchButton->setVisible(true);
@@ -458,8 +458,8 @@ void DebugPane::setupConsole()
       "  background: %2; "
       "  border-radius: 2px; "
       "}")
-      .arg(StyleManager::Colors::primaryOrangeAlpha(25))
-      .arg(StyleManager::Colors::primaryOrangeAlpha(64)));
+      .arg(StyleManager::Colors::primaryAlpha(25))
+      .arg(StyleManager::Colors::primaryAlpha(64)));
   m_guiLogAutoScrollButton->setToolTip("Auto-scroll");
   m_guiLogAutoScrollButton->setFocusPolicy(Qt::NoFocus);
   m_guiLogAutoScrollButton->setVisible(false);
@@ -484,8 +484,8 @@ void DebugPane::setupConsole()
       "  background: %2; "
       "  border-radius: 2px; "
       "}")
-      .arg(StyleManager::Colors::primaryOrangeAlpha(25))
-      .arg(StyleManager::Colors::primaryOrangeAlpha(64)));
+      .arg(StyleManager::Colors::primaryAlpha(25))
+      .arg(StyleManager::Colors::primaryAlpha(64)));
   m_guiLogSearchButton->setToolTip("Search (Ctrl+S)");
   m_guiLogSearchButton->setFocusPolicy(Qt::NoFocus);
   m_guiLogSearchButton->setVisible(false);
@@ -563,7 +563,7 @@ void DebugPane::setupConsole()
   iexShellLayout->setSpacing(0);
   
   m_iexShellView = new SandboxedWebView(m_iexShellContainer);
-  m_iexShellView->page()->setBackgroundColor(QColor(StyleManager::Colors::CONSOLE_BACKGROUND));
+  m_iexShellView->page()->setBackgroundColor(QColor(StyleManager::Colors::TERMINAL_BACKGROUND));
   iexShellLayout->addWidget(m_iexShellView);
   
   m_consoleStack->addWidget(m_beamLogContainer);
@@ -621,8 +621,8 @@ void DebugPane::setupDevTools()
   toolbarLayout->addWidget(m_liveDashboardTabButton);
   toolbarLayout->addStretch();
   
-  QString devNormalColor = StyleManager::Colors::PRIMARY_ORANGE;
-  QString devHoverColor = StyleManager::Colors::WHITE;
+  QString devNormalColor = StyleManager::Colors::PRIMARY;
+  QString devHoverColor = StyleManager::Colors::FOREGROUND;
   QString devZoomOutSvg = QString("<svg viewBox='0 0 16 16' fill='%1' xmlns='http://www.w3.org/2000/svg'><path d='M3 8h10v1H3z'/></svg>");
   QIcon devZoomOutIcon;
   devZoomOutIcon.addPixmap(createSvgPixmap(devZoomOutSvg.arg(devNormalColor), 16, 16), QIcon::Normal);
@@ -659,7 +659,7 @@ void DebugPane::setupDevTools()
   
   m_devToolsView = new SandboxedWebView(m_devToolsContainer);
   m_devToolsView->setFallbackUrl(QUrl());  // No fallback for DevTools
-  m_devToolsView->page()->setBackgroundColor(QColor(StyleManager::Colors::DARK_BACKGROUND));
+  m_devToolsView->page()->setBackgroundColor(QColor(StyleManager::Colors::SURFACE));
   
   QWebEngineSettings* devToolsSettings = m_devToolsView->settings();
   devToolsSettings->setFontFamily(QWebEngineSettings::FixedFont, "Cascadia Code");
@@ -675,7 +675,7 @@ void DebugPane::setupDevTools()
   liveDashboardLayout->setSpacing(0);
   
   m_liveDashboardView = new SandboxedWebView(m_liveDashboardContainer);
-  m_liveDashboardView->page()->setBackgroundColor(QColor(StyleManager::Colors::DARK_BACKGROUND));
+  m_liveDashboardView->page()->setBackgroundColor(QColor(StyleManager::Colors::SURFACE));
   liveDashboardLayout->addWidget(m_liveDashboardView);
   
   m_devToolsStack->addWidget(m_devToolsContainer);
@@ -814,10 +814,10 @@ void DebugPane::appendOutput(const QString &text, bool isError)
   QString timestamp = QDateTime::currentDateTime().toString("[hh:mm:ss.zzz] ");
 
   QTextCharFormat format;
-  format.setForeground(isError ? QColor(StyleManager::Colors::ERROR_BLUE) : QColor(StyleManager::Colors::PRIMARY_ORANGE));
+  format.setForeground(isError ? QColor(StyleManager::Colors::SELECTION) : QColor(StyleManager::Colors::PRIMARY));
 
   QTextCharFormat timestampFormat;
-  timestampFormat.setForeground(QColor(StyleManager::Colors::TIMESTAMP_GRAY));
+  timestampFormat.setForeground(QColor(StyleManager::Colors::MUTED));
   cursor.setCharFormat(timestampFormat);
   cursor.insertText(timestamp);
 
@@ -1682,10 +1682,10 @@ void DebugPane::appendGuiLog(const QString &text, bool isError)
   QString timestamp = QDateTime::currentDateTime().toString("[hh:mm:ss.zzz] ");
 
   QTextCharFormat format;
-  format.setForeground(isError ? QColor(StyleManager::Colors::ERROR_BLUE) : QColor(StyleManager::Colors::PRIMARY_ORANGE));
+  format.setForeground(isError ? QColor(StyleManager::Colors::SELECTION) : QColor(StyleManager::Colors::PRIMARY));
 
   QTextCharFormat timestampFormat;
-  timestampFormat.setForeground(QColor(StyleManager::Colors::TIMESTAMP_GRAY));
+  timestampFormat.setForeground(QColor(StyleManager::Colors::MUTED));
   cursor.setCharFormat(timestampFormat);
   cursor.insertText(timestamp);
 
@@ -1854,8 +1854,8 @@ QWidget* DebugPane::createTabToolbar(QWidget *parent)
       "  background-color: %1; "
       "  border-bottom: 1px solid %2; "
       "}")
-      .arg(StyleManager::Colors::blackAlpha(230))
-      .arg(StyleManager::Colors::primaryOrangeAlpha(50)));
+      .arg(StyleManager::Colors::backgroundAlpha(230))
+      .arg(StyleManager::Colors::primaryAlpha(50)));
   
   return toolbar;
 }
@@ -1879,13 +1879,13 @@ QString DebugPane::getTabButtonStyle()
       "  background: %6; "
       "  color: %7; "
       "}")
-      .arg(StyleManager::Colors::primaryOrangeAlpha(180))
+      .arg(StyleManager::Colors::primaryAlpha(180))
       .arg(StyleManager::Typography::MONOSPACE_FONT_FAMILY)
       .arg(StyleManager::Typography::FONT_SIZE_SMALL)
       .arg(StyleManager::Typography::FONT_WEIGHT_BOLD)
-      .arg(StyleManager::Colors::primaryOrangeAlpha(25))  // 0.1 * 255 ≈ 25
-      .arg(StyleManager::Colors::primaryOrangeAlpha(51))  // 0.2 * 255 ≈ 51
-      .arg(StyleManager::Colors::PRIMARY_ORANGE);
+      .arg(StyleManager::Colors::primaryAlpha(25))  // 0.1 * 255 ≈ 25
+      .arg(StyleManager::Colors::primaryAlpha(51))  // 0.2 * 255 ≈ 51
+      .arg(StyleManager::Colors::PRIMARY);
 }
 
 QString DebugPane::getZoomButtonStyle()
@@ -1906,8 +1906,8 @@ QString DebugPane::getZoomButtonStyle()
       "QPushButton:pressed { "
       "  background: %2; "
       "}")
-      .arg(StyleManager::Colors::primaryOrangeAlpha(25))  // 0.1 * 255 ≈ 25
-      .arg(StyleManager::Colors::primaryOrangeAlpha(38)); // 0.15 * 255 ≈ 38
+      .arg(StyleManager::Colors::primaryAlpha(25))  // 0.1 * 255 ≈ 25
+      .arg(StyleManager::Colors::primaryAlpha(38)); // 0.15 * 255 ≈ 38
 }
 
 QPushButton* DebugPane::createTabButton(const QString &text, QWidget *parent)
@@ -1931,8 +1931,8 @@ QPushButton* DebugPane::createZoomButton(const QIcon &icon, const QString &toolt
 
 QWidget* DebugPane::createSearchWidget(QWidget *parent, QLineEdit *&searchInput, QPushButton *&closeButton)
 {
-  QString normalColor = StyleManager::Colors::PRIMARY_ORANGE;
-  QString hoverColor = StyleManager::Colors::WHITE;
+  QString normalColor = StyleManager::Colors::PRIMARY;
+  QString hoverColor = StyleManager::Colors::FOREGROUND;
   
   QWidget *searchWidget = new QWidget(parent);
   searchWidget->setStyleSheet(QString(
@@ -1941,8 +1941,8 @@ QWidget* DebugPane::createSearchWidget(QWidget *parent, QLineEdit *&searchInput,
       "  border: 1px solid %2; "
       "  border-radius: 3px; "
       "}")
-      .arg(StyleManager::Colors::blackAlpha(230))
-      .arg(StyleManager::Colors::primaryOrangeAlpha(100)));
+      .arg(StyleManager::Colors::backgroundAlpha(230))
+      .arg(StyleManager::Colors::primaryAlpha(100)));
   searchWidget->setFixedSize(200, 30);
   searchWidget->hide();
   
@@ -1961,7 +1961,7 @@ QWidget* DebugPane::createSearchWidget(QWidget *parent, QLineEdit *&searchInput,
       "  font-size: %3; "
       "  padding: 2px; "
       "}")
-      .arg(StyleManager::Colors::WHITE)
+      .arg(StyleManager::Colors::FOREGROUND)
       .arg(StyleManager::Typography::MONOSPACE_FONT_FAMILY)
       .arg(StyleManager::Typography::FONT_SIZE_SMALL));
   
@@ -1983,7 +1983,7 @@ QWidget* DebugPane::createSearchWidget(QWidget *parent, QLineEdit *&searchInput,
       "QPushButton:hover { "
       "  background: %1; "
       "}")
-      .arg(StyleManager::Colors::primaryOrangeAlpha(25)));
+      .arg(StyleManager::Colors::primaryAlpha(25)));
   closeButton->setToolTip("Close search");
   closeButton->setFocusPolicy(Qt::NoFocus);
   
@@ -2090,8 +2090,8 @@ void DebugPane::setRestartButtonEnabled(bool enabled)
     
   m_restartButton->setEnabled(enabled);
   
-  QString normalColor = StyleManager::Colors::PRIMARY_ORANGE;
-  QString activeColor = StyleManager::Colors::WHITE;
+  QString normalColor = StyleManager::Colors::PRIMARY;
+  QString activeColor = StyleManager::Colors::FOREGROUND;
   
   if (enabled)
   {
@@ -2122,8 +2122,8 @@ void DebugPane::setRestartButtonEnabled(bool enabled)
         "QPushButton:focus { "
         "  outline: none; "
         "}")
-        .arg(StyleManager::Colors::primaryOrangeAlpha(25))
-        .arg(StyleManager::Colors::primaryOrangeAlpha(51));
+        .arg(StyleManager::Colors::primaryAlpha(25))
+        .arg(StyleManager::Colors::primaryAlpha(51));
     m_restartButton->setStyleSheet(buttonStyle);
     
     QString restartSvg = QString("<svg viewBox='0 0 16 16' fill='%1'><path d='M12.75 8a4.5 4.5 0 0 1-8.61 1.834l-1.391.565A6.001 6.001 0 0 0 14.25 8 6 6 0 0 0 3.5 4.334V2.5H2v4l.75.75h3.5v-1.5H4.352A4.5 4.5 0 0 1 12.75 8z'/></svg>");
@@ -2252,8 +2252,8 @@ void DebugPane::highlightAllMatches(QTextEdit *textEdit, const QString &searchTe
   // Setup the format for other occurrences (orange background)
   QTextEdit::ExtraSelection extraSelection;
   QTextCharFormat format;
-  format.setBackground(QColor(StyleManager::Colors::PRIMARY_ORANGE));
-  format.setForeground(QColor(StyleManager::Colors::BLACK));
+  format.setBackground(QColor(StyleManager::Colors::PRIMARY));
+  format.setForeground(QColor(StyleManager::Colors::BACKGROUND));
   
   // Find all occurrences and highlight them (except the current one)
   while (!highlightCursor.isNull() && !highlightCursor.atEnd()) {

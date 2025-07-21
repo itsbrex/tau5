@@ -48,8 +48,8 @@ void ControlLayer::setupControls()
               "  border-top: 1px solid %2; "
               "  border-bottom: 1px solid %2; "
               "}")
-          .arg(StyleManager::Colors::blackAlpha(191))
-          .arg(StyleManager::Colors::primaryOrangeAlpha(100)));
+          .arg(StyleManager::Colors::backgroundAlpha(191))
+          .arg(StyleManager::Colors::primaryAlpha(100)));
 
   positionControls();
 }

@@ -20,9 +20,9 @@ QString DebugPaneStyles::getDarkScrollbarCSS()
         ::-webkit-scrollbar-thumb:hover {
             background: %3;
         }
-    )").arg(StyleManager::Colors::blackAlpha(77))
-       .arg(StyleManager::Colors::primaryOrangeAlpha(128))
-       .arg(StyleManager::Colors::primaryOrangeAlpha(179));
+    )").arg(StyleManager::Colors::backgroundAlpha(77))
+       .arg(StyleManager::Colors::primaryAlpha(128))
+       .arg(StyleManager::Colors::primaryAlpha(179));
 }
 
 QString DebugPaneStyles::getHeaderStyle()
@@ -32,8 +32,8 @@ QString DebugPaneStyles::getHeaderStyle()
         "  background-color: %1;"
         "  border-bottom: 1px solid %2;"
         "}"
-    ).arg(StyleManager::Colors::DARK_BACKGROUND)
-     .arg(StyleManager::Colors::primaryOrangeAlpha(100));
+    ).arg(StyleManager::Colors::SURFACE)
+     .arg(StyleManager::Colors::primaryAlpha(100));
 }
 
 QString DebugPaneStyles::getResizeHandleStyle()
@@ -42,7 +42,7 @@ QString DebugPaneStyles::getResizeHandleStyle()
         "background-color: transparent;"
         "border-top: %1px solid %2;"
     ).arg(4)  // RESIZE_HANDLE_VISUAL_HEIGHT
-     .arg(StyleManager::Colors::primaryOrangeAlpha(100));
+     .arg(StyleManager::Colors::primaryAlpha(100));
 }
 
 QString DebugPaneStyles::getAutoScrollButtonStyle()
@@ -62,10 +62,10 @@ QString DebugPaneStyles::getAutoScrollButtonStyle()
         "  background-color: %3;"
         "  color: %4;"
         "}"
-    ).arg(StyleManager::Colors::TIMESTAMP_GRAY)
-     .arg(StyleManager::Colors::blackAlpha(51))
-     .arg(StyleManager::Colors::PRIMARY_ORANGE)
-     .arg(StyleManager::Colors::WHITE);
+    ).arg(StyleManager::Colors::MUTED)
+     .arg(StyleManager::Colors::backgroundAlpha(51))
+     .arg(StyleManager::Colors::PRIMARY)
+     .arg(StyleManager::Colors::FOREGROUND);
 }
 
 void DebugPaneStyles::applyDevToolsDarkTheme(QWebEngineView *view)
@@ -147,8 +147,8 @@ QString DebugPaneStyles::getLiveDashboardThemeCSS()
             color: %2 !important;
         }
         %3
-    )").arg(StyleManager::Colors::BLACK)
-       .arg(StyleManager::Colors::WHITE)
+    )").arg(StyleManager::Colors::BACKGROUND)
+       .arg(StyleManager::Colors::FOREGROUND)
        .arg(getDarkScrollbarCSS());
 }
 
@@ -161,8 +161,8 @@ QString DebugPaneStyles::getConsoleDarkThemeCSS()
             font-family: 'Cascadia Code PL', 'Cascadia Code', monospace !important;
         }
         %3
-    )").arg(StyleManager::Colors::BLACK)
-       .arg(StyleManager::Colors::WHITE)
+    )").arg(StyleManager::Colors::BACKGROUND)
+       .arg(StyleManager::Colors::FOREGROUND)
        .arg(getDarkScrollbarCSS());
 }
 

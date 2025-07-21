@@ -74,9 +74,9 @@ void Tabs::updateTabStyles(int activeIndex)
         "QPushButton:hover {"
         "  background-color: %3;"
         "}"
-    ).arg(StyleManager::Colors::PRIMARY_ORANGE)
-     .arg(StyleManager::Colors::WHITE)
-     .arg(StyleManager::Colors::primaryOrangeAlpha(230));
+    ).arg(StyleManager::Colors::PRIMARY)
+     .arg(StyleManager::Colors::FOREGROUND)
+     .arg(StyleManager::Colors::primaryAlpha(230));
 
     QString inactiveStyle = QString(
         "QPushButton {"
@@ -92,9 +92,9 @@ void Tabs::updateTabStyles(int activeIndex)
         "  background-color: %2;"
         "  color: %3;"
         "}"
-    ).arg(StyleManager::Colors::TIMESTAMP_GRAY)
-     .arg(StyleManager::Colors::blackAlpha(51))
-     .arg(StyleManager::Colors::WHITE);
+    ).arg(StyleManager::Colors::MUTED)
+     .arg(StyleManager::Colors::backgroundAlpha(51))
+     .arg(StyleManager::Colors::FOREGROUND);
 
     for (int i = 0; i < m_tabButtons.size(); ++i) {
         if (i == activeIndex) {
@@ -121,9 +121,9 @@ QString Tabs::getTabButtonStyle()
         "  background-color: %2;"
         "  color: %3;"
         "}"
-    ).arg(StyleManager::Colors::TIMESTAMP_GRAY)
-     .arg(StyleManager::Colors::blackAlpha(51))
-     .arg(StyleManager::Colors::WHITE);
+    ).arg(StyleManager::Colors::MUTED)
+     .arg(StyleManager::Colors::backgroundAlpha(51))
+     .arg(StyleManager::Colors::FOREGROUND);
 }
 
 QPushButton* Tabs::createTabButton(const QString &text, QWidget *parent)

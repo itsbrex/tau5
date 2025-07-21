@@ -31,8 +31,8 @@ QWidget* Search::createSearchWidget(QWidget *parent, QLineEdit *&searchInput, QP
         "  background-color: %1;"
         "  border-top: 1px solid %2;"
         "}"
-    ).arg(StyleManager::Colors::BLACK)
-     .arg(StyleManager::Colors::primaryOrangeAlpha(100)));
+    ).arg(StyleManager::Colors::BACKGROUND)
+     .arg(StyleManager::Colors::primaryAlpha(100)));
     
     QHBoxLayout *searchLayout = new QHBoxLayout(searchWidget);
     searchLayout->setContentsMargins(10, 5, 10, 5);
@@ -90,7 +90,7 @@ QIcon Search::createCloseIcon()
     
     QPainter painter(&pixmap);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setPen(QPen(QColor(StyleManager::Colors::TIMESTAMP_GRAY), 2));
+    painter.setPen(QPen(QColor(StyleManager::Colors::MUTED), 2));
     painter.drawLine(4, 4, 12, 12);
     painter.drawLine(4, 12, 12, 4);
     
@@ -111,10 +111,10 @@ QString Search::getSearchStyle()
         "QLineEdit:focus {"
         "  border-color: %4;"
         "}"
-    ).arg(StyleManager::Colors::blackAlpha(128))
-     .arg(StyleManager::Colors::WHITE)
-     .arg(StyleManager::Colors::primaryOrangeAlpha(77))
-     .arg(StyleManager::Colors::PRIMARY_ORANGE);
+    ).arg(StyleManager::Colors::backgroundAlpha(128))
+     .arg(StyleManager::Colors::FOREGROUND)
+     .arg(StyleManager::Colors::primaryAlpha(77))
+     .arg(StyleManager::Colors::PRIMARY);
 }
 
 void Search::performSearch()
@@ -221,9 +221,9 @@ void Search::highlightAllMatches(QTextEdit *textEdit, const QString &searchText,
     QTextCharFormat currentFormat;
     
     // Different colors for matches and current match
-    highlightFormat.setBackground(QColor(StyleManager::Colors::primaryOrangeAlpha(51)));
-    currentFormat.setBackground(QColor(StyleManager::Colors::PRIMARY_ORANGE));
-    currentFormat.setForeground(QColor(StyleManager::Colors::WHITE));
+    highlightFormat.setBackground(QColor(StyleManager::Colors::primaryAlpha(51)));
+    currentFormat.setBackground(QColor(StyleManager::Colors::PRIMARY));
+    currentFormat.setForeground(QColor(StyleManager::Colors::FOREGROUND));
     
     // First, highlight all matches
     while (!highlightCursor.isNull() && !highlightCursor.atEnd()) {

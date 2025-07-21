@@ -25,7 +25,7 @@ void ConsoleOutput::appendText(const QString &text, bool isError)
     cursor.movePosition(QTextCursor::End);
     
     QTextCharFormat format;
-    format.setForeground(isError ? QColor(StyleManager::Colors::ERROR_BLUE) : QColor(StyleManager::Colors::WHITE));
+    format.setForeground(isError ? QColor(StyleManager::Colors::SELECTION) : QColor(StyleManager::Colors::FOREGROUND));
     
     cursor.insertText(text, format);
     
@@ -140,8 +140,8 @@ QString ConsoleOutput::getConsoleStyle()
         "  selection-background-color: %3;"
         "  selection-color: %4;"
         "}"
-    ).arg(StyleManager::Colors::BLACK)
-     .arg(StyleManager::Colors::WHITE)
-     .arg(StyleManager::Colors::primaryOrangeAlpha(128))
-     .arg(StyleManager::Colors::WHITE);
+    ).arg(StyleManager::Colors::BACKGROUND)
+     .arg(StyleManager::Colors::FOREGROUND)
+     .arg(StyleManager::Colors::primaryAlpha(128))
+     .arg(StyleManager::Colors::FOREGROUND);
 }
