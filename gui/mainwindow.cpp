@@ -18,6 +18,7 @@
 #include "widgets/loadingoverlay.h"
 #include "lib/beam.h"
 #include "logger.h"
+#include "shortcuts/ShortcutManager.h"
 MainWindow::MainWindow(bool devMode, bool enableDebugPane, QWidget *parent)
     : QMainWindow(parent)
     , beamInstance(nullptr)
@@ -50,8 +51,13 @@ MainWindow::MainWindow(bool devMode, bool enableDebugPane, QWidget *parent)
 
   QMenuBar *menuBar = this->menuBar();
   QMenu *helpMenu = menuBar->addMenu(tr("&Help"));
-  QAction *aboutAction = helpMenu->addAction(tr("&About"));
-  connect(aboutAction, &QAction::triggered, this, &MainWindow::showAbout);
+  
+  // Use ShortcutManager to create menu actions
+  ShortcutManager& shortcutMgr = ShortcutManager::instance();
+  QAction *aboutAction = shortcutMgr.createAction(
+      ShortcutManager::ShowAbout, tr("&About"), this,
+      [this]() { showAbout(); });
+  helpMenu->addAction(aboutAction);
 
 #ifdef BUILD_WITH_DEBUG_PANE
   if (m_enableDebugPane) {
@@ -59,6 +65,9 @@ MainWindow::MainWindow(bool devMode, bool enableDebugPane, QWidget *parent)
   }
 #endif
   initializeControlLayer();
+  
+  // Set up global shortcuts
+  setupShortcuts();
 
   // Create loading overlay immediately to ensure it's ready for BEAM output
   loadingOverlay = std::make_unique<LoadingOverlay>();
@@ -239,6 +248,47 @@ void MainWindow::initializeControlLayer()
   connect(controlLayer.get(), &ControlLayer::openExternalBrowser, this, &MainWindow::handleOpenExternalBrowser);
   connect(controlLayer.get(), &ControlLayer::resetBrowser, this, &MainWindow::handleResetBrowser);
   connect(controlLayer.get(), &ControlLayer::toggleConsole, this, &MainWindow::toggleConsole);
+}
+
+void MainWindow::setupShortcuts()
+{
+  ShortcutManager& mgr = ShortcutManager::instance();
+  
+  // Global shortcuts
+#ifdef BUILD_WITH_DEBUG_PANE
+  if (m_enableDebugPane) {
+    mgr.createShortcut(ShortcutManager::ToggleDebugPane, this,
+                      [this]() { toggleConsole(); });
+  }
+#endif
+  
+  // View shortcuts
+  mgr.createShortcut(ShortcutManager::ZoomIn, this,
+                    [this]() { handleSizeUp(); });
+  mgr.createShortcut(ShortcutManager::ZoomOut, this,
+                    [this]() { handleSizeDown(); });
+  mgr.createShortcut(ShortcutManager::ZoomReset, this,
+                    [this]() {
+                      if (phxWidget) {
+                        phxWidget->setZoomFactor(1.0);
+                      }
+                    });
+  
+  // Navigation shortcuts
+  mgr.createShortcut(ShortcutManager::ResetBrowser, this,
+                    [this]() { handleResetBrowser(); });
+  mgr.createShortcut(ShortcutManager::OpenExternalBrowser, this,
+                    [this]() { handleOpenExternalBrowser(); });
+  
+  // Full screen shortcut
+  mgr.createShortcut(ShortcutManager::ToggleFullScreen, this,
+                    [this]() {
+                      if (isFullScreen()) {
+                        showNormal();
+                      } else {
+                        showFullScreen();
+                      }
+                    });
 }
 
 void MainWindow::toggleConsole()

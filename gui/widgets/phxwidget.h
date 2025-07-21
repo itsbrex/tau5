@@ -19,6 +19,7 @@ public:
   void handleSizeUp();
   void handleOpenExternalBrowser();
   void handleResetBrowser();
+  void setZoomFactor(qreal factor) { if (phxView) phxView->setZoomFactor(factor); }
   
   PhxWebView* getWebView() const { return phxView; }
 

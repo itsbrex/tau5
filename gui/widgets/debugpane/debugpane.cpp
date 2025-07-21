@@ -3,6 +3,7 @@
 // Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
 #include "debugpane.h"
 #include "../../styles/StyleManager.h"
+#include "../../shortcuts/ShortcutManager.h"
 #include "../phxwebview.h"
 #include "../sandboxedwebview.h"
 #include "../../logger.h"
@@ -139,6 +140,7 @@ DebugPane::DebugPane(QWidget *parent)
   setMouseTracking(true);
   setMinimumHeight(100);
   setupUi();
+  setupShortcuts();
   hide();
 }
 
@@ -2184,42 +2186,44 @@ void DebugPane::setRestartButtonEnabled(bool enabled)
   }
 }
 
+void DebugPane::setupShortcuts()
+{
+  ShortcutManager& mgr = ShortcutManager::instance();
+  
+  // Search shortcuts - only active when debug pane has focus
+  // Using Qt::WidgetWithChildrenShortcut so shortcuts work when focus is on any child widget
+  mgr.createShortcut(ShortcutManager::DebugPaneSearch, this,
+                    [this]() {
+                      if (!m_isVisible) return;
+                      QWidget *searchWidget = (m_consoleStack->currentIndex() == 0) ? 
+                                            m_beamLogSearchWidget : m_guiLogSearchWidget;
+                      if (searchWidget && searchWidget->isVisible()) {
+                        findNext();
+                      } else {
+                        toggleSearchBar();
+                      }
+                    }, Qt::WidgetWithChildrenShortcut);
+  
+  mgr.createShortcut(ShortcutManager::DebugPaneFindPrevious, this,
+                    [this]() {
+                      if (!m_isVisible) return;
+                      findPrevious();
+                    }, Qt::WidgetWithChildrenShortcut);
+  
+  mgr.createShortcut(ShortcutManager::DebugPaneCloseSearch, this,
+                    [this]() {
+                      if (!m_isVisible) return;
+                      QWidget *searchWidget = (m_consoleStack->currentIndex() == 0) ? 
+                                            m_beamLogSearchWidget : m_guiLogSearchWidget;
+                      if (searchWidget && searchWidget->isVisible()) {
+                        toggleSearchBar();
+                      }
+                    }, Qt::WidgetWithChildrenShortcut);
+}
+
 void DebugPane::keyPressEvent(QKeyEvent *event)
 {
-  if (!m_isVisible) {
-    QWidget::keyPressEvent(event);
-    return;
-  }
-  
-  if (event->modifiers() == Qt::ControlModifier) {
-    QWidget *searchWidget = (m_consoleStack->currentIndex() == 0) ? m_beamLogSearchWidget : m_guiLogSearchWidget;
-    bool searchVisible = searchWidget && searchWidget->isVisible();
-    
-    switch (event->key()) {
-      case Qt::Key_S:
-        if (searchVisible) {
-          findNext();
-        } else {
-          toggleSearchBar();
-        }
-        event->accept();
-        return;
-        
-      case Qt::Key_R:
-        findPrevious();
-        event->accept();
-        return;
-        
-      case Qt::Key_G:
-        if (searchVisible) {
-          toggleSearchBar();
-          event->accept();
-          return;
-        }
-        break;
-    }
-  }
-  
+  // Let shortcuts handle key events
   QWidget::keyPressEvent(event);
 }
 

@@ -94,6 +94,7 @@ protected:
 
 private:
     void setupUi();
+    void setupShortcuts();
     void setupViewControls();
     void setupConsole();
     void setupDevTools();

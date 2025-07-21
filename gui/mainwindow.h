@@ -58,6 +58,7 @@ private:
   void initializePhxWidget(quint16 port);
   void initializeDebugPane();
   void initializeControlLayer();
+  void setupShortcuts();
   void checkAllComponentsLoaded();
 
 private:
