@@ -16,37 +16,37 @@ ShortcutManager::ShortcutManager()
 
 void ShortcutManager::initializeDefaultShortcuts()
 {
-    // Use explicit key combinations to prevent Qt's automatic platform translation
-    // These will use Ctrl on ALL platforms unless explicitly overridden
+    // Force Ctrl on ALL platforms by using ControlModifier explicitly
+    // This prevents Qt from converting to Cmd on macOS
     
     // Global shortcuts
-    registerShortcut(ToggleDebugPane, QKeySequence(Qt::CTRL | Qt::Key_D), 
+    registerShortcut(ToggleDebugPane, QKeySequence(Qt::ControlModifier | Qt::Key_D), 
                     "Toggle Debug Pane", Global);
     registerShortcut(ToggleFullScreen, QKeySequence(Qt::Key_F11), 
                     "Toggle Full Screen", Global);
     
     // Debug pane shortcuts
-    registerShortcut(DebugPaneSearch, QKeySequence(Qt::CTRL | Qt::Key_S), 
+    registerShortcut(DebugPaneSearch, QKeySequence(Qt::ControlModifier | Qt::Key_S), 
                     "Search in Debug Pane", DebugPane);
-    registerShortcut(DebugPaneFindNext, QKeySequence(Qt::CTRL | Qt::Key_S), 
+    registerShortcut(DebugPaneFindNext, QKeySequence(Qt::ControlModifier | Qt::Key_S), 
                     "Find Next Match", DebugPane);
-    registerShortcut(DebugPaneFindPrevious, QKeySequence(Qt::CTRL | Qt::Key_R), 
+    registerShortcut(DebugPaneFindPrevious, QKeySequence(Qt::ControlModifier | Qt::Key_R), 
                     "Find Previous Match", DebugPane);
-    registerShortcut(DebugPaneCloseSearch, QKeySequence(Qt::CTRL | Qt::Key_G), 
+    registerShortcut(DebugPaneCloseSearch, QKeySequence(Qt::ControlModifier | Qt::Key_G), 
                     "Close Search", DebugPane);
     
     // View shortcuts
-    registerShortcut(ZoomIn, QKeySequence(Qt::CTRL | Qt::Key_Plus), 
+    registerShortcut(ZoomIn, QKeySequence(Qt::ControlModifier | Qt::Key_Plus), 
                     "Zoom In", View);
-    registerShortcut(ZoomOut, QKeySequence(Qt::CTRL | Qt::Key_Minus), 
+    registerShortcut(ZoomOut, QKeySequence(Qt::ControlModifier | Qt::Key_Minus), 
                     "Zoom Out", View);
-    registerShortcut(ZoomReset, QKeySequence(Qt::CTRL | Qt::Key_0), 
+    registerShortcut(ZoomReset, QKeySequence(Qt::ControlModifier | Qt::Key_0), 
                     "Reset Zoom", View);
     
     // Navigation shortcuts
-    registerShortcut(ResetBrowser, QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R), 
+    registerShortcut(ResetBrowser, QKeySequence(Qt::ControlModifier | Qt::ShiftModifier | Qt::Key_R), 
                     "Reset Browser", Navigation);
-    registerShortcut(OpenExternalBrowser, QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_E), 
+    registerShortcut(OpenExternalBrowser, QKeySequence(Qt::ControlModifier | Qt::ShiftModifier | Qt::Key_E), 
                     "Open in External Browser", Navigation);
     
     // Help shortcuts
