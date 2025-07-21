@@ -2,11 +2,11 @@
 // https://github.com/microsoft/vscode-icons
 // Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
 #include "debugpane.h"
-#include "StyleManager.h"
-#include "phxwebview.h"
-#include "sandboxedwebview.h"
-#include "../logger.h"
-#include "../lib/fontloader.h"
+#include "../../styles/StyleManager.h"
+#include "../phxwebview.h"
+#include "../sandboxedwebview.h"
+#include "../../logger.h"
+#include "../../lib/fontloader.h"
 #include <QTextEdit>
 #include <QPushButton>
 #include <QVBoxLayout>

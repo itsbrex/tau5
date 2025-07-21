@@ -76,8 +76,18 @@ if(BUILD_DEBUG_PANE)
   list(APPEND SOURCES
     ${QTAPP_ROOT}/widgets/consolewidget.h
     ${QTAPP_ROOT}/widgets/consolewidget.cpp
-    ${QTAPP_ROOT}/widgets/debugpane.h
-    ${QTAPP_ROOT}/widgets/debugpane.cpp
+    ${QTAPP_ROOT}/widgets/debugpane/debugpane.h
+    ${QTAPP_ROOT}/widgets/debugpane/debugpane.cpp
+    ${QTAPP_ROOT}/widgets/debugpane/tabs.h
+    ${QTAPP_ROOT}/widgets/debugpane/tabs.cpp
+    ${QTAPP_ROOT}/widgets/debugpane/search.h
+    ${QTAPP_ROOT}/widgets/debugpane/search.cpp
+    ${QTAPP_ROOT}/widgets/debugpane/consoleoutput.h
+    ${QTAPP_ROOT}/widgets/debugpane/consoleoutput.cpp
+    ${QTAPP_ROOT}/widgets/debugpane/zoomcontroller.h
+    ${QTAPP_ROOT}/widgets/debugpane/zoomcontroller.cpp
+    ${QTAPP_ROOT}/widgets/debugpane/debugpanestyles.h
+    ${QTAPP_ROOT}/widgets/debugpane/debugpanestyles.cpp
   )
 endif()
 

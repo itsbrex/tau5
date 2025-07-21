@@ -12,7 +12,7 @@
 #include "mainwindow.h"
 #include "widgets/phxwidget.h"
 #ifdef BUILD_WITH_DEBUG_PANE
-#include "widgets/debugpane.h"
+#include "widgets/debugpane/debugpane.h"
 #endif
 #include "widgets/controllayer.h"
 #include "widgets/loadingoverlay.h"
