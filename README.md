@@ -76,3 +76,12 @@ We will also add the ability to send and receive events directly to all particip
 ## Next Intelligence
 
 Tau5 will feature an MCP server directly connected to its core API - to enable LLM/AI agents to work directly with it. Jam with AI, use it to help craft your next drum loop or tweak your synth params.
+
+## Next Dev Tools
+
+Tau5 will feature built-in tools for development. This will include a sophisticated debug pane with live server/gui , logs, a REPL to the server, built-in Chromium dev tools and the Phoenix Live Dashboard.
+
+Additionally there will be 2 dev-focussed MCP tools for AI coding agents. These are:
+
+* Tidewave - for full AI control over the BEAM server including doc checks, log viewing and code evaluation
+* Tau5 GUI Dev - for full AI access to the Chromium dev tools
