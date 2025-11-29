@@ -1,3 +1,3 @@
-SuperSonic v0.11.0
+SuperSonic v0.11.1
 
 https://github.com/samaaron/supersonic
