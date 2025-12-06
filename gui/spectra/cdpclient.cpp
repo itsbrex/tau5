@@ -159,22 +159,49 @@ void CDPClient::fetchTargetList()
 
 QString CDPClient::findMainPageTarget(const QJsonArray& targets)
 {
+    // Exclude list for dev/internal pages
+    QStringList excludeList = {"Tau5 Console", "Phoenix LiveDashboard"};
+    QString fallbackId;
+    QString fallbackTitle;
+    QString fallbackUrl;
+
     // Look for page with the target title (defaults to "Tau5")
     for (const QJsonValue& value : targets) {
         QJsonObject target = value.toObject();
         QString type = target["type"].toString();
         QString title = target["title"].toString();
         QString url = target["url"].toString();
+        QString id = target["id"].toString();
 
-        if (type == "page" && title == m_targetTitle) {
+        if (type != "page") continue;
+        if (title.startsWith("DevTools")) continue;
+        if (excludeList.contains(title)) continue;
+
+        // Exact match - return immediately
+        if (title == m_targetTitle) {
             std::cerr << "# CDP: Found target with title '" << m_targetTitle.toStdString()
                       << "' at " << url.toStdString() << std::endl;
-            return target["id"].toString();
+            return id;
+        }
+
+        // Track first suitable fallback
+        if (fallbackId.isEmpty()) {
+            fallbackId = id;
+            fallbackTitle = title;
+            fallbackUrl = url;
         }
     }
 
-    std::cerr << "# CDP: Error - Target with title '" << m_targetTitle.toStdString()
-              << "' not found among available targets" << std::endl;
+    // Use fallback if available
+    if (!fallbackId.isEmpty()) {
+        std::cerr << "# CDP: Target '" << m_targetTitle.toStdString()
+                  << "' not found, using fallback '" << fallbackTitle.toStdString()
+                  << "' at " << fallbackUrl.toStdString() << std::endl;
+        m_targetTitle = fallbackTitle;  // Update target title for consistency
+        return fallbackId;
+    }
+
+    std::cerr << "# CDP: Error - No suitable page target found among available targets" << std::endl;
     return QString();
 }
 
@@ -1869,16 +1896,59 @@ QJsonArray CDPClient::getAvailableTargets()
 
 bool CDPClient::setTargetByTitle(const QString& title)
 {
+    // If already connected to the requested target, nothing to do
+    if (m_isConnected && m_currentTargetTitle == title) {
+        std::cerr << "# CDP: Already connected to target '" << title.toStdString() << "'" << std::endl;
+        return true;
+    }
+
     // Store the new target title
     m_targetTitle = title;
 
-    // If we're connected, disconnect and reconnect to the new target
+    // If we're connected to a different target, disconnect and reconnect
     if (m_isConnected) {
         std::cerr << "# CDP: Switching target to '" << title.toStdString() << "'" << std::endl;
         disconnect();
 
-        // Reconnect with new target
-        return connect();
+        // Reconnect with new target - use synchronous wait
+        connect();
+
+        // Wait for connection to complete (up to 3 seconds)
+        QEventLoop loop;
+        QTimer timeout;
+        timeout.setSingleShot(true);
+        timeout.setInterval(3000);
+
+        bool success = false;
+
+        auto connHandler = QObject::connect(this, &CDPClient::connected, [&]() {
+            success = true;
+            loop.quit();
+        });
+
+        auto failHandler = QObject::connect(this, &CDPClient::connectionFailed, [&](const QString&) {
+            loop.quit();
+        });
+
+        QObject::connect(&timeout, &QTimer::timeout, &loop, &QEventLoop::quit);
+
+        timeout.start();
+        loop.exec();
+
+        // Stop timeout if still running (connection resolved before timeout)
+        timeout.stop();
+
+        QObject::disconnect(connHandler);
+        QObject::disconnect(failHandler);
+
+        // If we timed out, abort the connection attempt to prevent signals
+        // firing after this function returns (which would access dangling references)
+        if (!success && m_webSocket->state() == QAbstractSocket::ConnectingState) {
+            std::cerr << "# CDP: Connection attempt timed out, aborting" << std::endl;
+            m_webSocket->abort();
+        }
+
+        return success;
     } else {
         // Not connected, just update target for next connection
         std::cerr << "# CDP: Target set to '" << title.toStdString() << "' for next connection" << std::endl;

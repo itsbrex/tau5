@@ -880,13 +880,21 @@ int main(int argc, char *argv[])
             }},
             {"required", QJsonArray{"title"}}
         },
-        [&cdpClient](const QJsonObject& params) -> QJsonObject {
+        [&bridge, &cdpClient](const QJsonObject& params) -> QJsonObject {
             QString title = params["title"].toString();
 
             if (title.isEmpty()) {
                 return QJsonObject{
                     {"type", "text"},
                     {"text", "Error: Target title cannot be empty"}
+                };
+            }
+
+            // Ensure CDP connection before attempting to set target
+            if (!bridge.ensureConnected()) {
+                return QJsonObject{
+                    {"type", "text"},
+                    {"text", QString("Error: Cannot connect to Chrome DevTools on port %1").arg(cdpClient->getDevToolsPort())}
                 };
             }
 
@@ -4008,52 +4016,15 @@ int main(int argc, char *argv[])
 
     debugLog("MCP server ready. Starting pre-emptive CDP connection...");
 
-    // Pre-emptively start the connection process and auto-select a target to reduce first-request latency
+    // Pre-emptively start the connection process to reduce first-request latency
+    // The CDPClient now handles target selection automatically (defaults to "Tau5" with fallback)
     QTimer::singleShot(500, [&bridge, &cdpClient]() {
         debugLog("Starting pre-emptive CDP connection attempt");
         if (bridge.ensureConnected()) {
-            // Connection established, now try to auto-select a target
-            debugLog("CDP connected, attempting to auto-select target...");
-
-            QJsonArray targets = cdpClient->getAvailableTargets();
-
-            if (!targets.isEmpty()) {
-                // Select the main app target by excluding known dev/internal targets
-                QString targetTitle;
-                QStringList excludeList = {"Tau5 Console", "Phoenix LiveDashboard"};
-
-                for (const QJsonValue& value : targets) {
-                    QJsonObject target = value.toObject();
-                    if (target["type"].toString() == "page") {
-                        QString title = target["title"].toString();
-
-                        // Skip DevTools internal pages
-                        if (title.startsWith("DevTools")) continue;
-
-                        // Skip known dev tools
-                        if (excludeList.contains(title)) continue;
-
-                        // This should be the main app page
-                        targetTitle = title;
-                        break;
-                    }
-                }
-
-                if (!targetTitle.isEmpty()) {
-                    bool success = cdpClient->setTargetByTitle(targetTitle);
-                    if (success) {
-                        debugLog(QString("Auto-connected to target: %1").arg(targetTitle));
-                    } else {
-                        debugLog(QString("Failed to auto-connect to target: %1").arg(targetTitle));
-                    }
-                } else {
-                    debugLog("No suitable page targets found for auto-connect");
-                }
-            } else {
-                debugLog("No targets available for auto-connect");
-            }
+            QString target = cdpClient->getCurrentTargetTitle();
+            debugLog(QString("CDP auto-connected to target: %1").arg(target));
         } else {
-            debugLog("CDP connection failed, skipping auto-connect");
+            debugLog("CDP pre-emptive connection failed - will retry on first tool call");
         }
     });
 
