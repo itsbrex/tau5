@@ -68,7 +68,9 @@ std::string generateHelpText(Tau5Common::BinaryType type, const char* programNam
     if (type == Tau5Common::BinaryType::Gui) {
         help << "  --dev-no-debug-pane      Disable debug pane\n"
              << "  --dev-allow-remote-access Allow loading remote websites/assets\n"
-             << "                           WARNING: For debugging only - reduces security\n";
+             << "                           WARNING: For debugging only - reduces security\n"
+             << "  --url <url>              Load URL directly (bypass Elixir server)\n"
+             << "                           Useful for testing external sites in Tau5 browser\n";
     }
 
     if (type == Tau5Common::BinaryType::Node) {

@@ -74,7 +74,10 @@ struct CommonArgs {
     
     // Path overrides
     std::string serverPath;        // Override server path (instead of using TAU5_SERVER_PATH env var)
-    
+
+    // Browser-only mode
+    std::string targetUrl;         // Direct URL to load (bypasses Elixir server entirely)
+
     // Friend authentication
     std::string friendToken;       // Friend authentication token for public endpoint
     
@@ -374,6 +377,18 @@ inline bool parseSharedArg(const char* arg, const char* nextArg, int& i, CommonA
         }
         return true;
     }
+    // Browser-only mode (bypass Elixir server)
+    else if (std::strcmp(arg, "--url") == 0) {
+        if (nextArg != nullptr) {
+            args.targetUrl = nextArg;
+            args.allowRemoteAccess = true;  // Automatically allow remote access for external URLs
+            i++;
+        } else {
+            args.hasError = true;
+            args.errorMessage = "--url requires a URL";
+        }
+        return true;
+    }
     // Friend authentication
     else if (std::strcmp(arg, "--friend-token") == 0) {
         // Check if next argument exists and is not another flag
@@ -666,6 +681,13 @@ inline std::string generateDryRunConfig(const ServerConfig& config) {
     oss << "========================================\n\n";
 
     oss << "Binary Type: " << binaryType << "\n\n";
+
+    // Browser-only mode
+    if (!args.targetUrl.empty()) {
+        oss << "Browser-Only Mode:\n";
+        oss << "  Target URL: " << args.targetUrl << "\n";
+        oss << "  (Elixir server bypassed)\n\n";
+    }
 
     oss << "Server Configuration:\n";
     oss << "  Environment: " << (args.env == CommonArgs::Env::Dev ? "Development" : "Production") << "\n";

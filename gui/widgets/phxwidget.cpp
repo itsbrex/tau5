@@ -88,6 +88,20 @@ void PhxWidget::handleOpenExternalBrowser()
   QDesktopServices::openUrl(phxView->url());
 }
 
+void PhxWidget::setResetUrl(const QUrl &url)
+{
+  defaultUrl = url;
+  Tau5Logger::instance().info(QString("[PHX] - reset URL set to: %1").arg(url.toString()));
+}
+
+void PhxWidget::loadUrl(const QUrl &url)
+{
+  defaultUrl = url;
+  retryCount = 0;
+  Tau5Logger::instance().info(QString("[PHX] - loading URL: %1").arg(url.toString()));
+  phxView->load(url);
+}
+
 void PhxWidget::connectToTauPhx(QUrl url)
 {
   defaultUrl = url;

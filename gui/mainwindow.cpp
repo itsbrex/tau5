@@ -13,6 +13,7 @@
 #include <QTextStream>
 #include <QShortcut>
 #include <QDir>
+#include <QWebEngineView>
 #include "mainwindow.h"
 #include "widgets/mainphxwidget.h"
 #ifdef BUILD_WITH_DEBUG_PANE
@@ -61,6 +62,7 @@ MainWindow::MainWindow(const Tau5CLI::ServerConfig& config, QWidget *parent)
     , m_channel(config.getArgs().channel)
     , m_appPageReadyReceived(false)
     , m_fadeToBlackComplete(false)
+    , m_browserOnlyUrl()
 {
   QCoreApplication::setOrganizationName("Tau5");
   QCoreApplication::setApplicationName("Tau5");
@@ -419,6 +421,94 @@ bool MainWindow::connectToServer(quint16 port)
 bool MainWindow::isElixirReplEnabled()
 {
   return m_enableRepl;
+}
+
+void MainWindow::startBrowserOnlyMode(const QUrl &targetUrl)
+{
+  m_browserOnlyUrl = targetUrl;
+  m_beamReady = true;  // Mark as ready even without BEAM
+
+  Tau5Logger::instance().info(QString("Browser-only mode: loading %1").arg(targetUrl.toString()));
+
+  // Update window title to show browser mode
+#ifdef TAU5_RELEASE_BUILD
+  QString appName = "Tau5 Browser";
+#else
+  QString appName = "Tau5Dev Browser";
+#endif
+
+  if (m_channel != 0) {
+    setWindowTitle(QString("%1 - [%2]").arg(appName).arg(m_channel));
+  } else {
+    setWindowTitle(appName);
+  }
+
+#ifndef Q_OS_MACOS
+  if (m_titleBar) {
+    if (m_channel != 0) {
+      m_titleBar->setTitle(QString("%1 - [%2]").arg(appName).arg(m_channel));
+    } else {
+      m_titleBar->setTitle(appName);
+    }
+  }
+#endif
+
+  // Start transition after a short delay for the shader to show
+  qint64 elapsedMs = bootStartTime.msecsTo(QDateTime::currentDateTime());
+  qint64 minDisplayMs = 1000;  // Shorter delay for browser-only mode
+  qint64 remainingMs = qMax(0LL, minDisplayMs - elapsedMs);
+
+  QTimer::singleShot(remainingMs, [this]() {
+    Tau5Logger::instance().info("Starting browser-only transition");
+
+    m_appPageReadyReceived = false;
+    m_fadeToBlackComplete = false;
+
+    // Fade to black
+    if (transitionOverlay) {
+      transitionOverlay->fadeIn(400);
+
+      connect(transitionOverlay.get(), &TransitionOverlay::fadeInComplete,
+              this, [this]() {
+                Tau5Logger::instance().info(QString("Loading target URL: %1").arg(m_browserOnlyUrl.toString()));
+                m_fadeToBlackComplete = true;
+
+                // Load the target URL directly
+                if (phxWidget) {
+                  phxWidget->setResetUrl(m_browserOnlyUrl);  // Set for reset functionality
+
+                  // Connect to web view's loadFinished directly (pageLoaded only fires once)
+                  PhxWebView* webView = phxWidget->getWebView();
+                  if (webView) {
+                    connect(webView, &QWebEngineView::loadFinished,
+                            this, [this](bool ok) {
+                              if (ok) {
+                                Tau5Logger::instance().info("Browser-only page loaded");
+                                m_appPageReadyReceived = true;
+                                startFadeOut();
+                              } else {
+                                Tau5Logger::instance().warning("Browser-only page load failed, fading in anyway");
+                                startFadeOut();
+                              }
+                            }, Qt::SingleShotConnection);
+                  }
+
+                  phxWidget->loadUrl(m_browserOnlyUrl);
+                }
+
+                // Keep console overlay visible during load
+                if (consoleOverlay) {
+                  consoleOverlay->raise();
+                  consoleOverlay->show();
+                }
+              }, Qt::SingleShotConnection);
+    }
+
+    if (consoleOverlay) {
+      consoleOverlay->raise();
+      consoleOverlay->show();
+    }
+  });
 }
 
 void MainWindow::startTransitionToApp()

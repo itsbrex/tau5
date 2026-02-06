@@ -20,6 +20,8 @@ public:
   PhxWidget(bool devMode = false, QWidget *parent = 0);
   PhxWidget(bool devMode, bool allowRemoteAccess, QWidget *parent = 0);
   void connectToTauPhx(QUrl url);
+  void loadUrl(const QUrl &url);       // Simple URL load (no LiveView polling)
+  void setResetUrl(const QUrl &url);   // Set URL used for reset/refresh
   void handleSizeDown();
   void handleSizeUp();
   void handleOpenExternalBrowser();

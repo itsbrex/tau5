@@ -2,6 +2,7 @@
 
 #include <QMainWindow>
 #include <QDateTime>
+#include <QUrl>
 #include <memory>
 
 // On windows, we need to include winsock2 before other instances of winsock
@@ -47,6 +48,7 @@ public:
   bool connectToServer(quint16 port);
   void setBeamInstance(Beam *beam);
   void toggleConsole();
+  void startBrowserOnlyMode(const QUrl &targetUrl);
 
 public slots:
   void handleBootLog(const QString &message, bool isError = false);
@@ -123,6 +125,7 @@ private:
   int m_channel;
   bool m_appPageReadyReceived;
   bool m_fadeToBlackComplete;
+  QUrl m_browserOnlyUrl;
 
   static constexpr int DEBUG_PANE_RESTORE_DELAY_MS = 500;
 };

@@ -37,6 +37,28 @@
 
 using namespace Tau5Common;
 
+// Helper to connect debug pane logging
+void connectDebugPaneLogger(MainWindow& mainWindow) {
+  QObject::connect(&Tau5Logger::instance(), &Tau5Logger::logMessage,
+                   &mainWindow, [&mainWindow](LogLevel level, const QString& category,
+                                             const QString& message, const QJsonObject&) {
+    bool isError = (level >= LogLevel::Warning);
+    QString levelStr;
+    switch(level) {
+      case LogLevel::Debug: levelStr = "[DEBUG]"; break;
+      case LogLevel::Info: levelStr = "[INFO]"; break;
+      case LogLevel::Warning: levelStr = "[WARN]"; break;
+      case LogLevel::Error: levelStr = "[ERROR]"; break;
+      case LogLevel::Critical: levelStr = "[CRITICAL]"; break;
+    }
+    QString formattedMessage = QString("%1 %2").arg(levelStr).arg(message);
+
+    if (category == "gui" || category.isEmpty()) {
+      mainWindow.handleGuiLog(formattedMessage, isError);
+    }
+  });
+}
+
 namespace GuiConfig
 {
   constexpr const char *CHROMIUM_FLAGS =
@@ -457,6 +479,47 @@ int main(int argc, char *argv[])
 
   Tau5Logger::instance().info(QString("Using port: %1").arg(port));
 
+  // ============================================================
+  // BROWSER-ONLY MODE: Skip Elixir server entirely
+  // ============================================================
+  if (!args.targetUrl.empty()) {
+    Tau5Logger::instance().info("Browser-only mode enabled");
+    Tau5Logger::instance().info(QString("Target URL: %1").arg(QString::fromStdString(args.targetUrl)));
+
+    // Create MainWindow in browser-only mode
+    MainWindow mainWindow(serverConfig);
+
+    if (args.debugPane) {
+      connectDebugPaneLogger(mainWindow);
+    }
+
+    // Print startup banner for browser-only mode
+    std::cout << "\n========================================================\n";
+    std::cout << "Tau5 Browser Mode\n";
+    std::cout << "--------------------------------------------------------\n";
+    std::cout << "  Target URL: " << args.targetUrl << "\n";
+    std::cout << "  Logs:       " << Tau5Logger::instance().currentSessionPath().toStdString() << "\n";
+    if (args.chromeDevtools) {
+      std::cout << "  Chrome CDP: Port " << serverConfig.getChromePort() << "\n";
+    }
+    std::cout << "========================================================\n";
+    std::cout << "Press Ctrl+C to stop\n" << std::endl;
+
+    // Start browser-only mode - load URL directly
+    QUrl targetUrl = QUrl::fromUserInput(QString::fromStdString(args.targetUrl));
+    mainWindow.startBrowserOnlyMode(targetUrl);
+
+#if defined(Q_OS_WIN)
+    mainWindow.setWindowIcon(QIcon(":/images/app.ico"));
+#endif
+
+    return app.exec();
+  }
+
+  // ============================================================
+  // NORMAL MODE: Start Elixir server
+  // ============================================================
+
   QString basePath = getServerBasePath(args.serverPath);
 
 #ifndef TAU5_RELEASE_BUILD
@@ -532,24 +595,7 @@ int main(int argc, char *argv[])
   MainWindow mainWindow(serverConfig);
 
   if (args.debugPane) {
-    QObject::connect(&Tau5Logger::instance(), &Tau5Logger::logMessage,
-                     &mainWindow, [&mainWindow](LogLevel level, const QString& category,
-                                               const QString& message, const QJsonObject&) {
-      bool isError = (level >= LogLevel::Warning);
-      QString levelStr;
-      switch(level) {
-        case LogLevel::Debug: levelStr = "[DEBUG]"; break;
-        case LogLevel::Info: levelStr = "[INFO]"; break;
-        case LogLevel::Warning: levelStr = "[WARN]"; break;
-        case LogLevel::Error: levelStr = "[ERROR]"; break;
-        case LogLevel::Critical: levelStr = "[CRITICAL]"; break;
-      }
-      QString formattedMessage = QString("%1 %2").arg(levelStr).arg(message);
-
-      if (category == "gui" || category.isEmpty()) {
-        mainWindow.handleGuiLog(formattedMessage, isError);
-      }
-    });
+    connectDebugPaneLogger(mainWindow);
   }
 
   if (args.verbose || isGuiDevMode) {
