@@ -27,6 +27,7 @@ defmodule Tau5Web.MainLive do
       |> assign(:layout_state, TiledLayout.new())
       |> assign(:show_controls, true)
       |> assign(:show_lua_console, false)
+      |> assign(:show_supersonic_info, false)
       |> assign(:widget_type, :monaco)
 
     {:ok, socket}
@@ -151,6 +152,16 @@ defmodule Tau5Web.MainLive do
           >
             <i class="codicon codicon-play"></i> Amen
           </button>
+
+          <div class="separator"></div>
+
+          <button
+            phx-click="toggle_supersonic_info"
+            class={if @show_supersonic_info, do: "active"}
+            title="Toggle SuperSonic Info"
+          >
+            <i class="codicon codicon-pulse"></i>
+          </button>
         </div>
 
         <div class="layout-info">
@@ -171,6 +182,7 @@ defmodule Tau5Web.MainLive do
     </div>
 
     <.live_component module={Tau5Web.LuaShellLive} id="lua-shell" visible={@show_lua_console} />
+    <.live_component module={Tau5Web.Components.SuperSonicInfoPanel} id="supersonic-info" visible={@show_supersonic_info} />
     """
   end
 
@@ -313,6 +325,11 @@ defmodule Tau5Web.MainLive do
   @impl true
   def handle_event("toggle_lua_console", _, socket) do
     {:noreply, assign(socket, :show_lua_console, !socket.assigns.show_lua_console)}
+  end
+
+  @impl true
+  def handle_event("toggle_supersonic_info", _, socket) do
+    {:noreply, assign(socket, :show_supersonic_info, !socket.assigns.show_supersonic_info)}
   end
 
   @impl true

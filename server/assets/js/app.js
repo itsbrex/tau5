@@ -7,7 +7,6 @@ import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
 
 // Import custom modules
-import { initSuperSonic } from "./lib/supersonic_tau5.js";
 import { playAmen } from "./lib/supersonic_demo.js";
 
 // Import LiveView hooks
@@ -19,16 +18,18 @@ import { Splitter } from "./lib/splitter_hook.js";
 import { TerminalScroll } from "./lib/terminal_scroll_hook.js";
 import { ConsoleInput } from "./lib/console_input_hook.js";
 import { HydraBackground } from "./lib/hydra_background_hook.js";
+import { SuperSonicPanel } from "./lib/supersonic_panel.js";
 
 // Set up direct event handlers after DOM loads
 document.addEventListener("DOMContentLoaded", async () => {
-  const sonic = await initSuperSonic();
-
   // Direct button click handler - no LiveView roundtrip
   document.addEventListener("click", async (e) => {
     if (e.target.closest('[data-supersonic-action="play-amen"]')) {
       e.preventDefault();
-      await playAmen(sonic);
+      // SuperSonic is initialized by the panel hook and exposed as window.supersonic
+      if (window.supersonic) {
+        await playAmen(window.supersonic);
+      }
     }
   });
 });
@@ -42,7 +43,8 @@ let Hooks = {
   Splitter,
   TerminalScroll,
   ConsoleInput,
-  HydraBackground
+  HydraBackground,
+  SuperSonicPanel
 };
 
 // Get CSRF token for LiveView
